@@ -1,4 +1,4 @@
-using YourProjectName.Shared.Responses;
+using Hermes.Responses;
 
 var builder = WebApplication.CreateBuilder(args);
 

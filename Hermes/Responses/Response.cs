@@ -1,4 +1,4 @@
-﻿namespace YourProjectName.Shared.Responses;
+﻿namespace Hermes.Responses;
 
 /// <summary>
 /// Represents a generic response wrapper containing data and optional attributes.

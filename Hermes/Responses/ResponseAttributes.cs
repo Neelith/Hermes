@@ -1,4 +1,4 @@
-﻿namespace YourProjectName.Shared.Responses;
+﻿namespace Hermes.Responses;
 
 /// <summary>
 /// Contains constant string values for common response attributes used in API responses.

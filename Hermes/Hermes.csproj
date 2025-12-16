@@ -4,6 +4,37 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Hermes</Title>
+    <Authors>Neelith</Authors>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>http;response;neelith;envelope;</PackageTags>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <Description>Hermes provides standardized response wrappers for ASP.NET APIs. It offers generic Response&lt;T&gt;, ID-based IdResponse&lt;T&gt;, and paginated PagedResponse&lt;T&gt; types with extensible metadata attributes. Factory methods ensure consistent API responses across your application, simplifying serialization and client consumption.</Description>
+    <PackageId>Neelith.Hermes</PackageId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

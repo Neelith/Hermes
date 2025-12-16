@@ -1,4 +1,4 @@
-﻿namespace YourProjectName.Shared.Responses;
+﻿namespace Hermes.Responses;
 
 /// <summary>
 /// Represents the data structure for an ID-based response.

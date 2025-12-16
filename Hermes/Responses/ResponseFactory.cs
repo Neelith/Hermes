@@ -1,4 +1,4 @@
-﻿namespace YourProjectName.Shared.Responses;
+﻿namespace Hermes.Responses;
 
 /// <summary>
 /// Provides factory methods for creating standardized response objects.
