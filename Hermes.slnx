@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Hermes.Webapi/Hermes.Webapi.csproj" Id="91d285b0-b8c1-4912-a892-98c23bb80635" />
+  <Project Path="Hermes/Hermes.csproj" />
+</Solution>
