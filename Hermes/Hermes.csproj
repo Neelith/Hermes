@@ -13,6 +13,7 @@
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <Description>Hermes provides standardized response wrappers for ASP.NET APIs. It offers generic Response&lt;T&gt;, ID-based IdResponse&lt;T&gt;, and paginated PagedResponse&lt;T&gt; types with extensible metadata attributes. Factory methods ensure consistent API responses across your application, simplifying serialization and client consumption.</Description>
     <PackageId>Neelith.Hermes</PackageId>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
