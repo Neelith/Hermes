@@ -104,7 +104,7 @@ public class Result
 
     #endregion
 
-    #region Factory Methods
+    #region Factory Methods - Non-Generic Result
 
     /// <summary>
     /// Creates a successful result without a value.

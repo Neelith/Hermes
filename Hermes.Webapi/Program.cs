@@ -45,73 +45,6 @@ app.MapGet("result/success", () =>
     return result;
 });
 
-app.MapGet("result/failure", () =>
-{
-    var result = Result<object>.Ko(
-        ErrorCodes.ValidationError,
-        "Invalid input provided",
-        new Dictionary<string, string?> { { "field", "email" } }
-    );
-    return result;
-});
-
-app.MapGet("result/multiple-errors", () =>
-{
-    var errors = new[]
-    {
-        new Error(ErrorCodes.ValidationError, "Email is required", new Dictionary<string, string?> { { "field", "email" } }),
-        new Error(ErrorCodes.ValidationError, "Password must be at least 8 characters", new Dictionary<string, string?> { { "field", "password" } })
-    };
-    
-    var result = Result<object>.Ko(errors);
-    return result;
-});
-
-app.MapGet("result/with-error-metadata", () =>
-{
-    var error = new Error(
-        ErrorCodes.NotFound,
-        "User not found",
-        new Dictionary<string, string?> 
-        { 
-            { "userId", "123" },
-            { "attemptedAt", DateTime.UtcNow.ToString() }
-        }
-    );
-    
-    var result = Result<object>.Ko(
-        error,
-        new Dictionary<string, string?> { { "requestId", Guid.NewGuid().ToString() } }
-    );
-    return result;
-});
-
-app.MapGet("result/process/{id:int}", (int id) =>
-{
-    // Simulate processing with conditional success/failure
-    if (id <= 0)
-    {
-        return Result<string>.Ko(
-            ErrorCodes.ValidationError,
-            "ID must be greater than zero",
-            new Dictionary<string, string?> { { "providedId", id.ToString() } }
-        );
-    }
-    
-    if (id > 100)
-    {
-        return Result<string>.Ko(
-            ErrorCodes.NotFound,
-            $"Resource with ID {id} not found"
-        );
-    }
-    
-    return Result<string>.Ok(
-        $"Processed resource {id}",
-        new Dictionary<string, string?> { { "processingTime", "23ms" } }
-    );
-});
-
 // Demo endpoint showing implicit conversion from value to Result
 app.MapGet("result/implicit-value/{value:int}", (int value) =>
 {
@@ -120,23 +53,15 @@ app.MapGet("result/implicit-value/{value:int}", (int value) =>
     return result;
 });
 
-// Demo endpoint showing implicit conversion from Error to Result
-app.MapGet("result/implicit-error", () =>
+// Demo endpoint showing Map extension
+app.MapGet("result/extensions/map/{value:int}", (int value) =>
 {
-    // Implicit conversion from Error to Result<string>
-    Result<string> result = new Error(ErrorCodes.InternalError, "Something went wrong");
-    return result;
-});
-
-// Demo endpoint showing implicit conversion to extract value
-app.MapGet("result/implicit-extract", () =>
-{
-    Result<string> result = Result<string>.Ok("Hello, World!");
+    var result = Result<int>.Ok(value);
     
-    // Implicit conversion from Result<string> to string
-    string value = result;
+    // Map to string
+    var stringResult = result.Map(x => $"Value is {x}");
     
-    return new { ExtractedValue = value };
+    return stringResult;
 });
 
 app.Run();
@@ -145,3 +70,5 @@ internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
+
+internal record User(int Id, string Name, string Email);
