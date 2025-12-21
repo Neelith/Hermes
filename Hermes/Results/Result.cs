@@ -152,6 +152,59 @@ public class Result
     }
 
     #endregion
+
+    // These methods are here to allow inference of T when calling Result.Ok(...) or Result.Ko(...)
+    // without having to specify the type parameter explicitly.
+    // For example: var result = Result.Ok(42); instead of var result = Result<int>.Ok(42);
+    #region Factory Methods - Generic Result
+
+    /// <summary>
+    /// Creates a successful result with the specified value.
+    /// </summary>
+    /// <param name="value">The value of the successful operation.</param>
+    /// <param name="metadata">Optional metadata to associate with the result.</param>
+    /// <returns>A successful <see cref="Result{T}"/>.</returns>
+    public static Result<T> Ok<T>(T value, Dictionary<string, string?>? metadata = null)
+    {
+        return Result<T>.Ok(value, metadata);
+    }
+
+    /// <summary>
+    /// Creates a failed result with the specified errors.
+    /// </summary>
+    /// <param name="errors">The errors that occurred during the operation.</param>
+    /// <param name="metadata">Optional metadata to associate with the result.</param>
+    /// <returns>A failed <see cref="Result{T}"/>.</returns>
+    public static Result<T> Ko<T>(IEnumerable<IError> errors, Dictionary<string, string?>? metadata = null)
+    {
+        ValidateErrors(errors);
+        return Result<T>.Ko(errors, metadata);
+    }
+
+    /// <summary>
+    /// Creates a failed result with a single error.
+    /// </summary>
+    /// <param name="error">The error that occurred during the operation.</param>
+    /// <param name="metadata">Optional metadata to associate with the result.</param>
+    /// <returns>A failed <see cref="Result{T}"/>.</returns>
+    public static Result<T> Ko<T>(IError error, Dictionary<string, string?>? metadata = null)
+    {
+        return Result<T>.Ko([error], metadata);
+    }
+
+    /// <summary>
+    /// Creates a failed result with a single error defined by code and message.
+    /// </summary>
+    /// <param name="errorCode">The error code.</param>
+    /// <param name="errorMessage">The error message.</param>
+    /// <param name="metadata">Optional metadata to associate with the result.</param>
+    /// <returns>A failed <see cref="Result{T}"/>.</returns>
+    public static Result<T> Ko<T>(string errorCode, string errorMessage, Dictionary<string, string?>? metadata = null)
+    {
+        return Result<T>.Ko(new Error(errorCode, errorMessage), metadata);
+    }
+
+    #endregion
 }
 
 /// <summary>

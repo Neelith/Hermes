@@ -56,7 +56,7 @@ app.MapGet("result/implicit-value/{value:int}", (int value) =>
 // Demo endpoint showing Map extension
 app.MapGet("result/extensions/map/{value:int}", (int value) =>
 {
-    var result = Result<int>.Ok(value);
+    var result = Result.Ok(value);
     
     // Map to string
     var stringResult = result.Map(x => $"Value is {x}");
