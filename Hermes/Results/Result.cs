@@ -218,16 +218,15 @@ public class Result<T> : Result
     private readonly T? _value;
 
     /// <summary>
-    /// Gets the value if the operation was successful.
+    /// Gets the value if the operation was successful, or the default value if the operation failed.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when attempting to access the value of a failed result.</exception>
-    public T Value
+    public T? Value
     {
         get
         {
             if (IsFailure)
             {
-                throw new InvalidOperationException("Cannot access Value of a failed result. Check IsSuccess before accessing Value.");
+                return default;
             }
             return _value!;
         }
@@ -243,7 +242,7 @@ public class Result<T> : Result
     /// <param name="onFailure">Function to execute if the result is failed.</param>
     /// <returns>The result of the executed function.</returns>
     public TResult Match<TResult>(
-        Func<T, TResult> onSuccess,
+        Func<T?, TResult> onSuccess,
         Func<IReadOnlyList<IError>, TResult> onFailure)
     {
         return IsSuccess ? onSuccess(Value) : onFailure(Errors);
@@ -255,7 +254,7 @@ public class Result<T> : Result
     /// <param name="onSuccess">Action to execute if the result is successful.</param>
     /// <param name="onFailure">Action to execute if the result is failed.</param>
     public void Match(
-        Action<T> onSuccess,
+        Action<T?> onSuccess,
         Action<IReadOnlyList<IError>> onFailure)
     {
         if (IsSuccess)
@@ -278,11 +277,11 @@ public class Result<T> : Result
     }
 
     /// <summary>
-    /// Implicitly converts a Result to its value. Throws if the result is failed.
+    /// Implicitly converts a Result to its value.
+    /// Returns the value if successful, or the default value if failed.
     /// </summary>
     /// <param name="result">The result to convert.</param>
-    /// <exception cref="InvalidOperationException">Thrown when attempting to convert a failed result to a value.</exception>
-    public static implicit operator T(Result<T> result)
+    public static implicit operator T?(Result<T> result)
     {
         return result.Value;
     }

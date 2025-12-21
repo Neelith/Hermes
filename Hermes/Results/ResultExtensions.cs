@@ -13,7 +13,7 @@ public static class ResultExtensions
     /// <param name="result">The source result.</param>
     /// <param name="selector">The transformation function.</param>
     /// <returns>A new result with the transformed value or the original errors.</returns>
-    public static Result<TResult> Map<TSource, TResult>(this Result<TSource> result, Func<TSource, TResult> selector)
+    public static Result<TResult> Map<TSource, TResult>(this Result<TSource> result, Func<TSource?, TResult> selector)
     {
         return result.IsSuccess
             ? Result<TResult>.Ok(selector(result.Value), result.Metadata)
@@ -27,7 +27,7 @@ public static class ResultExtensions
     /// <param name="result">The result.</param>
     /// <param name="action">The action to execute.</param>
     /// <returns>The original result for chaining.</returns>
-    public static Result<T> OnSuccess<T>(this Result<T> result, Action<T> action)
+    public static Result<T> OnSuccess<T>(this Result<T> result, Action<T?> action)
     {
         if (result.IsSuccess)
         {
