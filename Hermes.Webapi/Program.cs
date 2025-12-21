@@ -38,7 +38,7 @@ app.MapGet("response", () =>
 // Result object demo endpoints
 app.MapGet("result/success", () =>
 {
-    var result = ResultFactory.Success(
+    var result = Result<object>.Ok(
         new { Message = "Operation completed successfully", Data = 42 },
         new Dictionary<string, string?> { { "timestamp", DateTime.UtcNow.ToString() } }
     );
@@ -47,7 +47,7 @@ app.MapGet("result/success", () =>
 
 app.MapGet("result/failure", () =>
 {
-    var result = ResultFactory.Failure<object>(
+    var result = Result<object>.Ko(
         ErrorCodes.ValidationError,
         "Invalid input provided",
         new Dictionary<string, string?> { { "field", "email" } }
@@ -59,17 +59,17 @@ app.MapGet("result/multiple-errors", () =>
 {
     var errors = new[]
     {
-        ResultFactory.CreateError(ErrorCodes.ValidationError, "Email is required", new Dictionary<string, string?> { { "field", "email" } }),
-        ResultFactory.CreateError(ErrorCodes.ValidationError, "Password must be at least 8 characters", new Dictionary<string, string?> { { "field", "password" } })
+        new Error(ErrorCodes.ValidationError, "Email is required", new Dictionary<string, string?> { { "field", "email" } }),
+        new Error(ErrorCodes.ValidationError, "Password must be at least 8 characters", new Dictionary<string, string?> { { "field", "password" } })
     };
     
-    var result = ResultFactory.Failure<object>(errors);
+    var result = Result<object>.Ko(errors);
     return result;
 });
 
 app.MapGet("result/with-error-metadata", () =>
 {
-    var error = ResultFactory.CreateError(
+    var error = new Error(
         ErrorCodes.NotFound,
         "User not found",
         new Dictionary<string, string?> 
@@ -79,7 +79,7 @@ app.MapGet("result/with-error-metadata", () =>
         }
     );
     
-    var result = ResultFactory.Failure<object>(
+    var result = Result<object>.Ko(
         error,
         new Dictionary<string, string?> { { "requestId", Guid.NewGuid().ToString() } }
     );
@@ -91,7 +91,7 @@ app.MapGet("result/process/{id:int}", (int id) =>
     // Simulate processing with conditional success/failure
     if (id <= 0)
     {
-        return ResultFactory.Failure<string>(
+        return Result<string>.Ko(
             ErrorCodes.ValidationError,
             "ID must be greater than zero",
             new Dictionary<string, string?> { { "providedId", id.ToString() } }
@@ -100,16 +100,43 @@ app.MapGet("result/process/{id:int}", (int id) =>
     
     if (id > 100)
     {
-        return ResultFactory.Failure<string>(
+        return Result<string>.Ko(
             ErrorCodes.NotFound,
             $"Resource with ID {id} not found"
         );
     }
     
-    return ResultFactory.Success(
+    return Result<string>.Ok(
         $"Processed resource {id}",
         new Dictionary<string, string?> { { "processingTime", "23ms" } }
     );
+});
+
+// Demo endpoint showing implicit conversion from value to Result
+app.MapGet("result/implicit-value/{value:int}", (int value) =>
+{
+    // Implicit conversion from int to Result<int>
+    Result<int> result = value * 2;
+    return result;
+});
+
+// Demo endpoint showing implicit conversion from Error to Result
+app.MapGet("result/implicit-error", () =>
+{
+    // Implicit conversion from Error to Result<string>
+    Result<string> result = new Error(ErrorCodes.InternalError, "Something went wrong");
+    return result;
+});
+
+// Demo endpoint showing implicit conversion to extract value
+app.MapGet("result/implicit-extract", () =>
+{
+    Result<string> result = Result<string>.Ok("Hello, World!");
+    
+    // Implicit conversion from Result<string> to string
+    string value = result;
+    
+    return new { ExtractedValue = value };
 });
 
 app.Run();
