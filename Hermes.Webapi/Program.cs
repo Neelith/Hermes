@@ -92,7 +92,7 @@ app.MapGet("/api/test/response-paged", () =>
         Name = $"Item {i}",
         Description = $"This is item number {i}"
     });
-    
+
     var response = ResponseFactory.CreatePagedResponse(
         items,
         totalCount: 100,
@@ -104,15 +104,15 @@ app.MapGet("/api/test/response-paged", () =>
 // 9. Result Match pattern
 app.MapGet("/api/test/result-match/{shouldSucceed}", (bool shouldSucceed) =>
 {
-    var result = shouldSucceed 
+    var result = shouldSucceed
         ? Result.Ok("Success!")
         : Result.Ko<string>("ERR001", "Operation failed");
-    
+
     var message = result.Match(
         onSuccess: value => $"Operation succeeded with value: {value}",
         onFailure: errors => $"Operation failed with {errors.Count} error(s): {string.Join(", ", errors.Select(e => e.Message))}"
     );
-    
+
     return Results.Ok(new { Message = message, Result = result });
 });
 
@@ -126,7 +126,7 @@ app.MapGet("/api/test/combined/{userId:int}", (int userId) =>
         > 100 => Result.Ko<UserDto>("ERR404", "User not found"),
         _ => Result.Ko<UserDto>("ERR400", "Invalid user ID")
     };
-    
+
     return userResult.Match(
         onSuccess: user =>
         {

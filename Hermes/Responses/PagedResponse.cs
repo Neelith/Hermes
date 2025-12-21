@@ -18,8 +18,8 @@ public record PagedResponse<T> : Response<PagedResponseData<T>>
     /// </summary>
     /// <param name="data">The paged response data containing the items.</param>
     /// <param name="attributes">Optional metadata attributes, typically including pagination information.</param>
-    public PagedResponse(PagedResponseData<T> data, Dictionary<string, string?> attributes) : base(data, attributes) 
+    public PagedResponse(PagedResponseData<T> data, Dictionary<string, string?> attributes) : base(data, attributes)
     {
-        
+
     }
 }
