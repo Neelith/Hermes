@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Hermes.Results;
 
 /// <summary>

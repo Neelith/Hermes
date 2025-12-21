@@ -15,60 +15,132 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.MapGet("id", () =>
+// Test endpoints for Result and Response functionality
+
+// 1. Simple successful Result without value
+app.MapGet("/api/test/result-ok", () =>
 {
-    return ResponseFactory.CreateIdResponse(Guid.NewGuid());
+    var result = Result.Ok();
+    return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
 });
 
-app.MapGet("list", () =>
+// 2. Successful Result with value
+app.MapGet("/api/test/result-ok-with-value", () =>
 {
-    var summaries = new[]
+    var result = Result.Ok("Operation completed successfully");
+    return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
+});
+
+// 3. Failed Result with single error
+app.MapGet("/api/test/result-ko-single", () =>
+{
+    var result = Result.Ko("ERR001", "Something went wrong");
+    return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
+});
+
+// 4. Failed Result with multiple errors
+app.MapGet("/api/test/result-ko-multiple", () =>
+{
+    var errors = new List<IError>
     {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        new Error("ERR001", "First error occurred"),
+        new Error("ERR002", "Second error occurred"),
+        new Error("ERR003", "Third error occurred")
     };
-
-    return ResponseFactory.CreatePagedResponse(summaries, summaries.Length);
+    var result = Result.Ko(errors);
+    return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
 });
 
-app.MapGet("response", () =>
+// 5. Result with metadata
+app.MapGet("/api/test/result-with-metadata", () =>
 {
-    return ResponseFactory.CreateResponse(new { Hello = "World"}, new Dictionary<string, string?> { { "key", "value" } });
+    var metadata = new Dictionary<string, string?>
+    {
+        ["RequestId"] = Guid.NewGuid().ToString(),
+        ["Timestamp"] = DateTime.UtcNow.ToString("o")
+    };
+    var result = Result.Ok(42, metadata);
+    return Results.Ok(result);
 });
 
-// Result object demo endpoints
-app.MapGet("result/success", () =>
+// 6. Generic Response
+app.MapGet("/api/test/response-generic", () =>
 {
-    var result = Result<object>.Ok(
-        new { Message = "Operation completed successfully", Data = 42 },
-        new Dictionary<string, string?> { { "timestamp", DateTime.UtcNow.ToString() } }
+    var response = ResponseFactory.CreateResponse(
+        new { Name = "John Doe", Age = 30, Email = "john@example.com" },
+        new Dictionary<string, string?> { ["Source"] = "TestAPI" }
     );
-    return result;
+    return Results.Ok(response);
 });
 
-// Demo endpoint showing implicit conversion from value to Result
-app.MapGet("result/implicit-value/{value:int}", (int value) =>
+// 7. ID Response
+app.MapGet("/api/test/response-id", () =>
 {
-    // Implicit conversion from int to Result<int>
-    Result<int> result = value * 2;
-    return result;
+    var response = ResponseFactory.CreateIdResponse(
+        Guid.NewGuid(),
+        new Dictionary<string, string?> { ["CreatedAt"] = DateTime.UtcNow.ToString("o") }
+    );
+    return Results.Ok(response);
 });
 
-// Demo endpoint showing Map extension
-app.MapGet("result/extensions/map/{value:int}", (int value) =>
+// 8. Paged Response
+app.MapGet("/api/test/response-paged", () =>
 {
-    var result = Result.Ok(value);
+    var items = Enumerable.Range(1, 10).Select(i => new
+    {
+        Id = i,
+        Name = $"Item {i}",
+        Description = $"This is item number {i}"
+    });
     
-    // Map to string
-    var stringResult = result.Map(x => $"Value is {x}");
+    var response = ResponseFactory.CreatePagedResponse(
+        items,
+        totalCount: 100,
+        new Dictionary<string, string?> { ["PageSize"] = "10", ["CurrentPage"] = "1" }
+    );
+    return Results.Ok(response);
+});
+
+// 9. Result Match pattern
+app.MapGet("/api/test/result-match/{shouldSucceed}", (bool shouldSucceed) =>
+{
+    var result = shouldSucceed 
+        ? Result.Ok("Success!")
+        : Result.Ko<string>("ERR001", "Operation failed");
     
-    return stringResult;
+    var message = result.Match(
+        onSuccess: value => $"Operation succeeded with value: {value}",
+        onFailure: errors => $"Operation failed with {errors.Count} error(s): {string.Join(", ", errors.Select(e => e.Message))}"
+    );
+    
+    return Results.Ok(new { Message = message, Result = result });
+});
+
+// 10. Combined Result and Response
+app.MapGet("/api/test/combined/{userId:int}", (int userId) =>
+{
+    // Simulate a service operation that returns a Result
+    Result<UserDto> userResult = userId switch
+    {
+        > 0 and <= 100 => Result.Ok(new UserDto(userId, $"User{userId}", $"user{userId}@example.com")),
+        > 100 => Result.Ko<UserDto>("ERR404", "User not found"),
+        _ => Result.Ko<UserDto>("ERR400", "Invalid user ID")
+    };
+    
+    return userResult.Match(
+        onSuccess: user =>
+        {
+            var response = ResponseFactory.CreateResponse(
+                user,
+                new Dictionary<string, string?> { ["RetrievedAt"] = DateTime.UtcNow.ToString("o") }
+            );
+            return Results.Ok(response);
+        },
+        onFailure: errors => Results.BadRequest(new { Errors = errors })
+    );
 });
 
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
-
-internal record User(int Id, string Name, string Email);
+// Helper record for testing
+record UserDto(int Id, string Name, string Email);

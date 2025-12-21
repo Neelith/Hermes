@@ -1,6 +1,81 @@
-@Hermes.Webapi_HostAddress = http://localhost:5071
+@Hermes.Webapi_HostAddress = http://localhost:8080
 
-GET {{Hermes.Webapi_HostAddress}}/weatherforecast/
+### 1. Test Result.Ok() - Simple successful result without value
+GET {{Hermes.Webapi_HostAddress}}/api/test/result-ok
 Accept: application/json
 
 ###
+
+### 2. Test Result.Ok<T>() - Successful result with value
+GET {{Hermes.Webapi_HostAddress}}/api/test/result-ok-with-value
+Accept: application/json
+
+###
+
+### 3. Test Result.Ko() - Failed result with single error
+GET {{Hermes.Webapi_HostAddress}}/api/test/result-ko-single
+Accept: application/json
+
+###
+
+### 4. Test Result.Ko() - Failed result with multiple errors
+GET {{Hermes.Webapi_HostAddress}}/api/test/result-ko-multiple
+Accept: application/json
+
+###
+
+### 5. Test Result with metadata
+GET {{Hermes.Webapi_HostAddress}}/api/test/result-with-metadata
+Accept: application/json
+
+###
+
+### 6. Test Response - Generic response
+GET {{Hermes.Webapi_HostAddress}}/api/test/response-generic
+Accept: application/json
+
+###
+
+### 7. Test Response - ID response
+GET {{Hermes.Webapi_HostAddress}}/api/test/response-id
+Accept: application/json
+
+###
+
+### 8. Test Response - Paged response
+GET {{Hermes.Webapi_HostAddress}}/api/test/response-paged
+Accept: application/json
+
+###
+
+### 9. Test Result.Match() - Success scenario
+GET {{Hermes.Webapi_HostAddress}}/api/test/result-match/true
+Accept: application/json
+
+###
+
+### 10. Test Result.Match() - Failure scenario
+GET {{Hermes.Webapi_HostAddress}}/api/test/result-match/false
+Accept: application/json
+
+###
+
+### 11. Test Combined Result + Response - Valid user
+GET {{Hermes.Webapi_HostAddress}}/api/test/combined/42
+Accept: application/json
+
+###
+
+### 12. Test Combined Result + Response - User not found
+GET {{Hermes.Webapi_HostAddress}}/api/test/combined/101
+Accept: application/json
+
+###
+
+### 13. Test Combined Result + Response - Invalid user ID
+GET {{Hermes.Webapi_HostAddress}}/api/test/combined/-1
+Accept: application/json
+
+###
+
+# Response
