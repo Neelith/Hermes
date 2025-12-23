@@ -7,13 +7,13 @@ using Hermes.Results;
 
 namespace Hermes.Handlers;
 
-public interface ICommandHandler<in TCommand>
+public interface ICommandHandler<in TCommand> : IHandler
     where TCommand : ICommand
 {
     Task<Result> Handle(TCommand command, CancellationToken cancellationToken);
 }
 
-public interface ICommandHandler<in TCommand, TResponse>
+public interface ICommandHandler<in TCommand, TResponse> : IHandler
     where TCommand : ICommand<TResponse>
     where TResponse : IResponse
 {

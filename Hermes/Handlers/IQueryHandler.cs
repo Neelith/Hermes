@@ -7,7 +7,7 @@ using Hermes.Results;
 
 namespace Hermes.Handlers;
 
-public interface IQueryHandler<in TQuery, TResponse>
+public interface IQueryHandler<in TQuery, TResponse> : IHandler
     where TQuery : IQuery<TResponse>
     where TResponse : IResponse
 {

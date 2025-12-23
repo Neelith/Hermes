@@ -1,11 +1,24 @@
 using Hermes.Responses;
 using Hermes.Results;
+using Hermes.Handlers;
+using Hermes.Webapi.Queries;
+using Hermes.Webapi.Commands;
+using Hermes.Webapi.Responses;
+using Hermes.Webapi.Decorators;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+// Register handlers from the WebApi assembly
+builder.Services.AddHandlers([Assembly.GetExecutingAssembly()]);
+
+// Register decorators for handlers
+builder.Services.AddHandlerDecorator(typeof(IQueryHandler<,>), typeof(LoggingQueryHandlerDecorator<,>));
+builder.Services.AddHandlerDecorator(typeof(ICommandHandler<,>), typeof(LoggingCommandHandlerDecorator<,>));
 
 var app = builder.Build();
 
@@ -14,6 +27,34 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+// Handler examples with decorators
+
+// Query example - Get user by ID
+app.MapGet("/api/users/{userId:int}", async (int userId, IQueryHandler<GetUserQuery, Response<UserDto>> handler, CancellationToken ct) =>
+{
+    var query = new GetUserQuery(userId);
+    var result = await handler.Handle(query, ct);
+
+    return result.Match(
+        onSuccess: user => Results.Ok(result.Value),
+        onFailure: errors => Results.BadRequest(new { Errors = errors })
+    );
+})
+.WithName("GetUser");
+
+// Command example - Create user
+app.MapPost("/api/users", async (CreateUserRequest request, ICommandHandler<CreateUserCommand, UserIdResponse> handler, CancellationToken ct) =>
+{
+    var command = new CreateUserCommand(request.Name, request.Email);
+    var result = await handler.Handle(command, ct);
+
+    return result.Match(
+        onSuccess: response => Results.Created($"/api/users/{response.UserId}", ResponseFactory.CreateResponse(response)),
+        onFailure: errors => Results.BadRequest(new { Errors = errors })
+    );
+})
+.WithName("CreateUser");
 
 // Test endpoints for Result and Response functionality
 
@@ -142,5 +183,6 @@ app.MapGet("/api/test/combined/{userId:int}", (int userId) =>
 
 app.Run();
 
-// Helper record for testing
-record UserDto(int Id, string Name, string Email);
+// Helper records for testing
+public record UserDto(int Id, string Name, string Email);
+public record CreateUserRequest(string Name, string Email);

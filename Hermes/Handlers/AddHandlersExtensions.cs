@@ -25,4 +25,11 @@ public static class AddHandlersExtensions
 
         return services;
     }
+
+    public static IServiceCollection AddHandlerDecorator(
+        this IServiceCollection services, Type handler, Type decorator)
+    {
+        var _ = services.TryDecorate(handler, decorator);
+        return services;
+    }
 }

@@ -1,5 +1,63 @@
 @Hermes.Webapi_HostAddress = http://localhost:8080
 
+### Handler Examples
+
+### Get User by ID - Success scenario (ID between 1-100)
+GET {{Hermes.Webapi_HostAddress}}/api/users/42
+Accept: application/json
+
+###
+
+### Get User by ID - Not found scenario (ID > 100)
+GET {{Hermes.Webapi_HostAddress}}/api/users/101
+Accept: application/json
+
+###
+
+### Get User by ID - Invalid ID scenario (ID <= 0)
+GET {{Hermes.Webapi_HostAddress}}/api/users/0
+Accept: application/json
+
+###
+
+### Create User - Success scenario
+POST {{Hermes.Webapi_HostAddress}}/api/users
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com"
+}
+
+###
+
+### Create User - Invalid name scenario
+POST {{Hermes.Webapi_HostAddress}}/api/users
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "",
+  "email": "john.doe@example.com"
+}
+
+###
+
+### Create User - Invalid email scenario
+POST {{Hermes.Webapi_HostAddress}}/api/users
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "John Doe",
+  "email": "invalid-email"
+}
+
+###
+
+### Test Endpoints for Result and Response Functionality
+
 ### 1. Test Result.Ok() - Simple successful result without value
 GET {{Hermes.Webapi_HostAddress}}/api/test/result-ok
 Accept: application/json
