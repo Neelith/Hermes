@@ -1,7 +1,6 @@
 using System.Reflection;
 using Hermes.Handlers;
 using Hermes.Responses;
-using Hermes.Results;
 using Hermes.Webapi.Commands;
 using Hermes.Webapi.Decorators;
 using Hermes.Webapi.Queries;

@@ -1,5 +1,4 @@
 using Hermes.Handlers;
-using Hermes.Requests;
 using Hermes.Results;
 using Hermes.Webapi.Commands;
 using Hermes.Webapi.Responses;
