@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Hermes.Requests;
+﻿using Hermes.Requests;
 using Hermes.Responses;
 using Hermes.Results;
 

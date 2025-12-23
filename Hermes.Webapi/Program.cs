@@ -1,11 +1,11 @@
+using System.Reflection;
+using Hermes.Handlers;
 using Hermes.Responses;
 using Hermes.Results;
-using Hermes.Handlers;
-using Hermes.Webapi.Queries;
 using Hermes.Webapi.Commands;
-using Hermes.Webapi.Responses;
 using Hermes.Webapi.Decorators;
-using System.Reflection;
+using Hermes.Webapi.Queries;
+using Hermes.Webapi.Responses;
 
 var builder = WebApplication.CreateBuilder(args);
 

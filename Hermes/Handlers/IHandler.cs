@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Hermes.Handlers;
+﻿namespace Hermes.Handlers;
 
 /// <summary>
 /// Marker interface for all handler types in the Hermes framework.

@@ -17,7 +17,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserI
 
     public async Task<Result<UserIdResponse>> Handle(CreateUserCommand command, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Handling CreateUserCommand for Name: {Name}, Email: {Email}", 
+        _logger.LogInformation("Handling CreateUserCommand for Name: {Name}, Email: {Email}",
             command.Name, command.Email);
 
         // Simulate async operation

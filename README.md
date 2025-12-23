@@ -59,7 +59,7 @@ dotnet add package Neelith.Hermes
 - Microsoft.Extensions.DependencyInjection (included in ASP.NET Core)
 
 **Dependencies:**
-- [Scrutor](https://github.com/khellang/Scrutor) 7.0.0 (for assembly scanning)
+- [Scrutor](https://github.com/khellang/Scrutor) (for assembly scanning)
 
 ---
 

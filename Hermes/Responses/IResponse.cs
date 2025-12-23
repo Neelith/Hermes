@@ -1,7 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Hermes.Responses;
+﻿namespace Hermes.Responses;
 
 public interface IResponse;
