@@ -1,139 +1,130 @@
 @Hermes.Webapi_HostAddress = http://localhost:8080
 
-### Handler Examples
+# =============================================================================
+# HERMES HANDLER TESTING - Complete Functionality Test Suite
+# =============================================================================
 
-### Get User by ID - Success scenario (ID between 1-100)
+# This file demonstrates all Hermes handler patterns:
+# 1. IQueryHandler<TQuery, TResponse> - Query handlers that return responses
+# 2. ICommandHandler<TCommand> - Command handlers without responses
+
+# Response Types Covered:
+# - Response<T> - Generic response wrapper
+# - IdResponse<T> - Specialized response for ID values
+# - PagedResponse<T> - Specialized response for paginated collections
+
+# =============================================================================
+# QUERY HANDLERS - Response<T>
+# =============================================================================
+
+### Query: Get User by ID - Success (Response<UserDto>)
 GET {{Hermes.Webapi_HostAddress}}/api/users/42
 Accept: application/json
 
-###
-
-### Get User by ID - Not found scenario (ID > 100)
+### Query: Get User by ID - Not Found
 GET {{Hermes.Webapi_HostAddress}}/api/users/101
 Accept: application/json
 
-###
-
-### Get User by ID - Invalid ID scenario (ID <= 0)
+### Query: Get User by ID - Invalid (ID <= 0)
 GET {{Hermes.Webapi_HostAddress}}/api/users/0
 Accept: application/json
 
-###
-
-### Create User - Success scenario
-POST {{Hermes.Webapi_HostAddress}}/api/users
-Content-Type: application/json
+### Query: Get User by ID - Invalid (negative ID)
+GET {{Hermes.Webapi_HostAddress}}/api/users/-5
 Accept: application/json
 
-{
-  "name": "John Doe",
-  "email": "john.doe@example.com"
-}
+# =============================================================================
+# QUERY HANDLERS - IdResponse<T>
+# =============================================================================
 
-###
-
-### Create User - Invalid name scenario
-POST {{Hermes.Webapi_HostAddress}}/api/users
-Content-Type: application/json
+### Query: Get User ID by Email - Success (IdResponse<int>)
+GET {{Hermes.Webapi_HostAddress}}/api/users/by-email/john.doe@example.com
 Accept: application/json
 
-{
-  "name": "",
-  "email": "john.doe@example.com"
-}
-
-###
-
-### Create User - Invalid email scenario
-POST {{Hermes.Webapi_HostAddress}}/api/users
-Content-Type: application/json
+### Query: Get User ID by Email - Different email
+GET {{Hermes.Webapi_HostAddress}}/api/users/by-email/jane.smith@example.com
 Accept: application/json
 
-{
-  "name": "John Doe",
-  "email": "invalid-email"
-}
-
-###
-
-### Test Endpoints for Result and Response Functionality
-
-### 1. Test Result.Ok() - Simple successful result without value
-GET {{Hermes.Webapi_HostAddress}}/api/test/result-ok
+### Query: Get User ID by Email - Invalid email
+GET {{Hermes.Webapi_HostAddress}}/api/users/by-email/invalid-email
 Accept: application/json
 
-###
-
-### 2. Test Result.Ok<T>() - Successful result with value
-GET {{Hermes.Webapi_HostAddress}}/api/test/result-ok-with-value
+### Query: Get User ID by Email - Empty email
+GET {{Hermes.Webapi_HostAddress}}/api/users/by-email/ 
 Accept: application/json
 
-###
+# =============================================================================
+# QUERY HANDLERS - PagedResponse<T>
+# =============================================================================
 
-### 3. Test Result.Ko() - Failed result with single error
-GET {{Hermes.Webapi_HostAddress}}/api/test/result-ko-single
+### Query: Get Paged Users - First page (PagedResponse<UserDto>)
+GET {{Hermes.Webapi_HostAddress}}/api/users/paged?page=1&pageSize=10
 Accept: application/json
 
-###
-
-### 4. Test Result.Ko() - Failed result with multiple errors
-GET {{Hermes.Webapi_HostAddress}}/api/test/result-ko-multiple
+### Query: Get Paged Users - Second page
+GET {{Hermes.Webapi_HostAddress}}/api/users/paged?page=2&pageSize=10
 Accept: application/json
 
-###
-
-### 5. Test Result with metadata
-GET {{Hermes.Webapi_HostAddress}}/api/test/result-with-metadata
+### Query: Get Paged Users - Large page size
+GET {{Hermes.Webapi_HostAddress}}/api/users/paged?page=1&pageSize=50
 Accept: application/json
 
-###
-
-### 6. Test Response - Generic response
-GET {{Hermes.Webapi_HostAddress}}/api/test/response-generic
+### Query: Get Paged Users - Last page
+GET {{Hermes.Webapi_HostAddress}}/api/users/paged?page=25&pageSize=10
 Accept: application/json
 
-###
-
-### 7. Test Response - ID response
-GET {{Hermes.Webapi_HostAddress}}/api/test/response-id
+### Query: Get Paged Users - Invalid page (page <= 0)
+GET {{Hermes.Webapi_HostAddress}}/api/users/paged?page=0&pageSize=10
 Accept: application/json
 
-###
-
-### 8. Test Response - Paged response
-GET {{Hermes.Webapi_HostAddress}}/api/test/response-paged
+### Query: Get Paged Users - Invalid page size (too large)
+GET {{Hermes.Webapi_HostAddress}}/api/users/paged?page=1&pageSize=200
 Accept: application/json
 
-###
-
-### 9. Test Result.Match() - Success scenario
-GET {{Hermes.Webapi_HostAddress}}/api/test/result-match/true
+### Query: Get Paged Users - Invalid page size (negative)
+GET {{Hermes.Webapi_HostAddress}}/api/users/paged?page=1&pageSize=-5
 Accept: application/json
 
-###
+# =============================================================================
+# COMMAND HANDLERS WITHOUT RESPONSE - ICommandHandler<TCommand>
+# =============================================================================
 
-### 10. Test Result.Match() - Failure scenario
-GET {{Hermes.Webapi_HostAddress}}/api/test/result-match/false
+### Command without Response: Delete User - Success
+DELETE {{Hermes.Webapi_HostAddress}}/api/users/42
 Accept: application/json
 
-###
-
-### 11. Test Combined Result + Response - Valid user
-GET {{Hermes.Webapi_HostAddress}}/api/test/combined/42
+### Command without Response: Delete User - Not Found (ID > 100)
+DELETE {{Hermes.Webapi_HostAddress}}/api/users/101
 Accept: application/json
 
-###
-
-### 12. Test Combined Result + Response - User not found
-GET {{Hermes.Webapi_HostAddress}}/api/test/combined/101
+### Command without Response: Delete User - Invalid ID (ID <= 0)
+DELETE {{Hermes.Webapi_HostAddress}}/api/users/0
 Accept: application/json
 
-###
-
-### 13. Test Combined Result + Response - Invalid user ID
-GET {{Hermes.Webapi_HostAddress}}/api/test/combined/-1
+### Command without Response: Delete User - Invalid ID (negative)
+DELETE {{Hermes.Webapi_HostAddress}}/api/users/-10
 Accept: application/json
 
-###
+# =============================================================================
+# HANDLER PATTERNS SUMMARY
+# =============================================================================
 
-# Response
+# This test suite covers:
+# 
+# HANDLER TYPES:
+# ? IQueryHandler<TQuery, TResponse> - Read operations returning typed responses
+# ? ICommandHandler<TCommand> - Write operations without response values
+# 
+# RESPONSE TYPES:
+# ? Response<T> - Generic response wrapper with data and attributes
+# ? IdResponse<T> - Specialized response for ID values with type metadata
+# ? PagedResponse<T> - Specialized response for paginated data with totalCount
+# 
+# PATTERNS:
+# ? Result<T> success scenarios
+# ? Result failure scenarios (single and multiple errors)
+# ? Decorator pattern (logging applied to all handlers)
+# ? Validation patterns
+# ? Error handling patterns
+# ? Pagination with metadata
+# ? Response attributes and metadata
