@@ -1,5 +1,5 @@
 ﻿namespace Hermes.Requests;
 
-internal class Request
+public interface IRequest
 {
 }
