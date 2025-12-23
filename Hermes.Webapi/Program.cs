@@ -50,7 +50,7 @@ app.MapPost("/api/users", async (CreateUserRequest request, ICommandHandler<Crea
     var result = await handler.Handle(command, ct);
 
     return result.Match(
-        onSuccess: response => Results.Created($"/api/users/{response.UserId}", ResponseFactory.CreateResponse(response)),
+        onSuccess: response => Results.Created($"/api/users/{response.UserId}", Response<UserIdResponse>.Create(response)),
         onFailure: errors => Results.BadRequest(new { Errors = errors })
     );
 })
@@ -107,7 +107,7 @@ app.MapGet("/api/test/result-with-metadata", () =>
 // 6. Generic Response
 app.MapGet("/api/test/response-generic", () =>
 {
-    var response = ResponseFactory.CreateResponse(
+    var response = Response<object>.Create(
         new { Name = "John Doe", Age = 30, Email = "john@example.com" },
         new Dictionary<string, string?> { ["Source"] = "TestAPI" }
     );
@@ -117,7 +117,7 @@ app.MapGet("/api/test/response-generic", () =>
 // 7. ID Response
 app.MapGet("/api/test/response-id", () =>
 {
-    var response = ResponseFactory.CreateIdResponse(
+    var response = IdResponse<Guid>.Create(
         Guid.NewGuid(),
         new Dictionary<string, string?> { ["CreatedAt"] = DateTime.UtcNow.ToString("o") }
     );
@@ -134,7 +134,7 @@ app.MapGet("/api/test/response-paged", () =>
         Description = $"This is item number {i}"
     });
 
-    var response = ResponseFactory.CreatePagedResponse(
+    var response = PagedResponse<object>.Create(
         items,
         totalCount: 100,
         new Dictionary<string, string?> { ["PageSize"] = "10", ["CurrentPage"] = "1" }
@@ -171,7 +171,7 @@ app.MapGet("/api/test/combined/{userId:int}", (int userId) =>
     return userResult.Match(
         onSuccess: user =>
         {
-            var response = ResponseFactory.CreateResponse(
+            var response = Response<UserDto>.Create(
                 user,
                 new Dictionary<string, string?> { ["RetrievedAt"] = DateTime.UtcNow.ToString("o") }
             );

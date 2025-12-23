@@ -33,7 +33,7 @@ public class GetUserQueryHandler : IQueryHandler<GetUserQuery, Response<UserDto>
             return Result.Ko<Response<UserDto>>("USER_NOT_FOUND", $"User with ID {query.UserId} not found");
         }
 
-        var user = ResponseFactory.CreateResponse(new UserDto(
+        var user = Response<UserDto>.Create(new UserDto(
             query.UserId,
             $"User {query.UserId}",
             $"user{query.UserId}@example.com"
