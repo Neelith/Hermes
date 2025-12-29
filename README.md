@@ -675,7 +675,7 @@ public class TransactionCommandHandlerDecorator<TCommand, TResponse>
 
 1. **Consistent Structure** - Always use Response<T> wrappers
 2. **Meaningful Attributes** - Add metadata that helps clients
-3. **Appropriate Types** - Use `IdResponse<T>` for IDs, `PagedResponse<T>` for lists
+3. **Appropriate Types** - Use `IdResponse<T>` for IDs, `PagedResponse<T>` for lists or create custom wrappers as needed
 4. **Include Type Info** - Especially useful for polymorphic responses
 
 ### Error Handling
